@@ -15,16 +15,20 @@ $baseUrl = str_replace('index.php', '', $scriptName);
 define('BASE_URL', $baseUrl);
 
 // Configuración de la base de datos
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'demetrio_blog');
-define('DB_USER', 'root');
-define('DB_PASS', ''); // Cambiar si es necesario
+// Lee las credenciales desde las variables de entorno de Railway (MYSQLHOST, MYSQLPORT,
+// MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE). Si no están definidas, usa valores por
+// defecto para desarrollo local.
+define('DB_HOST', getenv('MYSQLHOST')     ?: 'localhost');
+define('DB_PORT', getenv('MYSQLPORT')     ?: '3306');
+define('DB_NAME', getenv('MYSQLDATABASE') ?: 'demetrio_blog');
+define('DB_USER', getenv('MYSQLUSER')     ?: 'root');
+define('DB_PASS', getenv('MYSQLPASSWORD') ?: '');
 
 // Función para conectar a la base de datos y realizar auto-instalación si es necesario
 function getDbConnection() {
     try {
         // Intentar conectar a la base de datos existente
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+        $dsn = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
         $pdo = new PDO($dsn, DB_USER, DB_PASS);
         $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
@@ -62,7 +66,7 @@ function getDbConnection() {
     } catch (PDOException $e) {
         // Si falla porque no existe, intentar crearla ejecutando el script SQL
         try {
-            $dsnWithoutDb = "mysql:host=" . DB_HOST . ";charset=utf8mb4";
+            $dsnWithoutDb = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";charset=utf8mb4";
             $pdoInit = new PDO($dsnWithoutDb, DB_USER, DB_PASS);
             $pdoInit->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             
@@ -74,7 +78,7 @@ function getDbConnection() {
                 $pdoInit->exec($sqlContent);
                 
                 // Conectar nuevamente con la base de datos ya creada
-                $dsnWithDb = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8mb4";
+                $dsnWithDb = "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8mb4";
                 $pdo = new PDO($dsnWithDb, DB_USER, DB_PASS);
                 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                 return $pdo;
