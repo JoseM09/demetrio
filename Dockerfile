@@ -3,6 +3,9 @@ FROM php:8.2-apache
 # Install PDO MySQL extension
 RUN docker-php-ext-install pdo pdo_mysql
 
+# Disable conflicting MPM modules and enable prefork (required for mod_php)
+RUN a2dismod mpm_event && a2enmod mpm_prefork
+
 # Enable Apache mod_rewrite for URL routing
 RUN a2enmod rewrite
 
