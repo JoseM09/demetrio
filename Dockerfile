@@ -1,10 +1,19 @@
 FROM php:8.2-apache
 
+# Forcefully remove mpm_event symlinks before anything else to prevent
+# "More than one MPM loaded" conflict — mpm_event is compiled into the
+# base image and a2dismod alone is not sufficient to unload it.
+RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf \
+          /etc/apache2/mods-enabled/mpm_event.load
+
+# Enable mpm_prefork (required by mod_php)
+RUN ln -sf /etc/apache2/mods-available/mpm_prefork.conf \
+           /etc/apache2/mods-enabled/mpm_prefork.conf \
+    && ln -sf /etc/apache2/mods-available/mpm_prefork.load \
+              /etc/apache2/mods-enabled/mpm_prefork.load
+
 # Install PDO MySQL extension
 RUN docker-php-ext-install pdo pdo_mysql
-
-# Disable conflicting MPM modules and enable prefork (required for mod_php)
-RUN a2dismod mpm_event && a2enmod mpm_prefork
 
 # Enable Apache mod_rewrite for URL routing
 RUN a2enmod rewrite
@@ -13,7 +22,7 @@ RUN a2enmod rewrite
 RUN sed -i 's|AllowOverride None|AllowOverride All|g' /etc/apache2/apache2.conf
 
 # Set the document root to the public directory
-ENV APACHE_DOCUMENT_ROOT /var/www/html/public
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' \
         /etc/apache2/sites-available/000-default.conf \
