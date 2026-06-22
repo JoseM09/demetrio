@@ -1,0 +1,250 @@
+
+
+/* Título mejorado */
+header h1 {
+    font-size: 3em;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+    padding: 10px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(91, 192, 222, 0.3);
+    animation: fadeInDown 1s ease;
+}
+
+/* Animación */
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Línea decorativa */
+header::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    height: 4px;
+    background-color: #5bc0de;
+    border-radius: 2px;
+    animation: slideIn 1s ease;
+}
+
+
+
+
+
+
+/* Estilos generales */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+/* Body */
+body {
+    font-family: 'Poppins', sans-serif; /* Tipografía moderna */
+    line-height: 1.7;
+    background-color: #f6f7f9; /* Fondo claro */
+    color: #333;
+    padding-bottom: 50px;
+}
+
+/* Contenedor principal */
+.container {
+    width: 90%;
+    margin:  auto;
+}
+
+/* Header */
+header {
+    background-color: #1e2a38; /* Color de fondo sólido */
+    color: white;
+    padding: 15px 0;
+    text-align: center;
+    position: relative;
+}
+
+header h1 {
+    font-size: 2.5em;
+    font-weight: 600;
+    margin-bottom: 15px;
+    letter-spacing: 0.5px;
+}
+
+header nav {
+    margin-top: 20px;
+}
+
+header nav a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1.1em;
+    padding: 8px 18px;
+    margin: 0 12px;
+    font-weight: 500;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+header nav a:hover {
+    background-color: #5bc0de;
+    color: #1e2a38;
+    transform: scale(1.05); /* Efecto de escala */
+}
+
+header nav a:active {
+    transform: scale(1.02);
+}
+
+/* Main content */
+main {
+    margin-top: 40px;
+    padding-bottom: 40px;
+}
+
+/* Secciones */
+section {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    padding: 25px;
+    transition: box-shadow 0.3s ease;
+}
+
+section:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15); /* Sombra más intensa al pasar el mouse */
+}
+
+section h2 {
+    font-size: 1.8em;
+    color: #1e2a38;
+    font-weight: 600;
+    margin-bottom: 15px;
+    border-bottom: 3px solid #5bc0de;
+    padding-bottom: 8px;
+    letter-spacing: 0.5px;
+}
+
+section p {
+    font-size: 1.1em;
+    line-height: 1.7;
+    margin-bottom: 15px;
+}
+
+section ul {
+    list-style-type: none;
+    padding-left: 20px;
+}
+
+section ul li {
+    font-size: 1.1em;
+    margin-bottom: 12px;
+    padding-left: 12px;
+    position: relative;
+}
+
+section ul li:before {
+    content: "•";
+    color: #5bc0de;
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+/* Forms */
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 2px;
+}
+
+form input, form textarea {
+    padding: 5px;
+    font-size: 1.1em;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+form input:focus, form textarea:focus {
+    border-color: #5bc0de;
+    outline: none;
+    box-shadow: 0 0 6px rgba(91, 192, 222, 0.3); /* Efecto de foco sutil */
+}
+
+/* Button */
+form button {
+    background-color: #5bc0de;
+    border: none;
+    color: white;
+    padding: 10px;
+    font-size: 1.1em;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+form button:hover {
+    background-color: #31b0d5;
+    transform: translateY(-3px); /* Efecto de desplazamiento */
+}
+
+form button:active {
+    transform: translateY(2px);
+}
+
+
+
+/* Responsividad */
+@media (max-width: 768px) {
+    header h1 {
+        font-size: 2.2em;
+    }
+
+    header nav a {
+        font-size: 1em;
+        padding: 10px 15px;
+    }
+
+    section {
+        padding: 20px;
+    }
+
+    form input, form textarea, form button {
+        font-size: 1em;
+    }
+}
+
+
+/* Footer */
+footer {
+    background-color: #1e2a38;
+    color: white;
+    text-align: center;
+    padding: 8px 0;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+}
+
+footer p {
+    font-size: 0.9em;
+}
