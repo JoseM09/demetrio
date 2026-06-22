@@ -1,33 +1,12 @@
-FROM php:8.2-apache
+FROM php:8.2-fpm
 
-# Forcefully remove mpm_event symlinks before anything else to prevent
-# "More than one MPM loaded" conflict — mpm_event is compiled into the
-# base image and a2dismod alone is not sufficient to unload it.
-RUN rm -f /etc/apache2/mods-enabled/mpm_event.conf \
-          /etc/apache2/mods-enabled/mpm_event.load
+# Install nginx and PDO MySQL extension
+RUN apt-get update && apt-get install -y nginx \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-install pdo pdo_mysql
 
-# Enable mpm_prefork (required by mod_php)
-RUN ln -sf /etc/apache2/mods-available/mpm_prefork.conf \
-           /etc/apache2/mods-enabled/mpm_prefork.conf \
-    && ln -sf /etc/apache2/mods-available/mpm_prefork.load \
-              /etc/apache2/mods-enabled/mpm_prefork.load
-
-# Install PDO MySQL extension
-RUN docker-php-ext-install pdo pdo_mysql
-
-# Enable Apache mod_rewrite for URL routing
-RUN a2enmod rewrite
-
-# Configure Apache to allow .htaccess overrides
-RUN sed -i 's|AllowOverride None|AllowOverride All|g' /etc/apache2/apache2.conf
-
-# Set the document root to the public directory
-ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
-
-RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' \
-        /etc/apache2/sites-available/000-default.conf \
-    && sed -i 's|<Directory /var/www/html>|<Directory /var/www/html/public>|g' \
-        /etc/apache2/apache2.conf
+# Copy nginx site configuration
+COPY nginx.conf /etc/nginx/sites-available/default
 
 # Copy application code
 COPY . /var/www/html/
@@ -38,3 +17,6 @@ RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 775 /var/www/html/public/uploads
 
 EXPOSE 80
+
+# Start both nginx and php-fpm
+CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
