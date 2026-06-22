@@ -5,8 +5,9 @@ RUN apt-get update && apt-get install -y nginx \
     && rm -rf /var/lib/apt/lists/* \
     && docker-php-ext-install pdo pdo_mysql
 
-# Copy nginx site configuration
+# Copy nginx site configuration and enable the site
 COPY nginx.conf /etc/nginx/sites-available/default
+RUN ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 # Copy application code
 COPY . /var/www/html/
@@ -18,5 +19,5 @@ RUN chown -R www-data:www-data /var/www/html \
 
 EXPOSE 80
 
-# Start both nginx and php-fpm
+# Start php-fpm in the background, then run nginx in the foreground
 CMD ["sh", "-c", "php-fpm -D && nginx -g 'daemon off;'"]
